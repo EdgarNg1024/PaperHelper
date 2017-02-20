@@ -61,13 +61,16 @@ for c in cnts:
     # 计算轮廓的边界框，然后利用边界框数据计算宽高比
     (x, y, w, h) = cv2.boundingRect(c)
     ar = w / float(h)
+    print 'w' + str(w), 'h' + str(h)
 
-    # 为了辨别一个轮廓是一个气泡，要求它的边界框不能太小，在这里边至少是20个像素，而且它的宽高比要近似于1
-    # if ar >= 1.4:
-    peri = cv2.arcLength(c, True)
-    approx = cv2.approxPolyDP(c, 0.02 * peri, True)
-    if len(approx) == 4:
-        questionCnts.append(c)
+    # 为了辨别一个轮廓是一个方框，要求它的边界框不能太小，在这里边至少是40个像素，而且它的宽高比要近似于1
+    # 为了去掉外面的那个方框,所以轮廓不能太长,小于300像素
+    # 轮廓肯定会有4个点
+    if ar >= 0.9 and 37 < w < 300:
+        peri = cv2.arcLength(c, True)
+        approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+        if len(approx) >= 4:
+            questionCnts.append(c)
 
 color = (0, 0, 255)
 cv2.drawContours(paper, questionCnts, -1, color, 3)
