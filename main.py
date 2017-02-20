@@ -48,6 +48,31 @@ if len(cnts) > 0:
 paper = four_point_transform(image, docCnt.reshape(4, 2))
 warped = four_point_transform(gray, docCnt.reshape(4, 2))
 
+# 对灰度图应用大津二值化算法
+thresh = cv2.threshold(warped, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+
+# 在二值图像中查找轮廓，然后初始化题目对应的轮廓列表
+cnts = cv2.findContours(thresh.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+questionCnts = []
+
+# 对每一个轮廓进行循环处理
+for c in cnts:
+    # 计算轮廓的边界框，然后利用边界框数据计算宽高比
+    (x, y, w, h) = cv2.boundingRect(c)
+    ar = w / float(h)
+
+    # 为了辨别一个轮廓是一个气泡，要求它的边界框不能太小，在这里边至少是20个像素，而且它的宽高比要近似于1
+    # if ar >= 1.4:
+    peri = cv2.arcLength(c, True)
+    approx = cv2.approxPolyDP(c, 0.02 * peri, True)
+    if len(approx) == 4:
+        questionCnts.append(c)
+
+color = (0, 0, 255)
+cv2.drawContours(paper, questionCnts, -1, color, 3)
+
 # cv2.imshow("Original", image)
-cv2.imshow("exam", warped)
+# cv2.imshow("exam", thresh)
+cv2.imshow("exam", paper)
 cv2.waitKey(0)

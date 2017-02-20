@@ -92,7 +92,7 @@ for (q, i) in enumerate(np.arange(0, len(questionCnts), 5)):
         if bubbled is None or total > bubbled[0]:
             bubbled = (total, j)
 
-        # 初始化轮廓颜色为红色，获取正确答案序号
+            # 初始化轮廓颜色为红色，获取正确答案序号
     color = (0, 0, 255)
     k = ANSWER_KEY[q]
 
