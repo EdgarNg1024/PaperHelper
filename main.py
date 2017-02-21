@@ -57,23 +57,34 @@ cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 questionCnts = []
 
 # 对每一个轮廓进行循环处理
-for c in cnts:
+for q, c in enumerate(cnts):
+
     # 计算轮廓的边界框，然后利用边界框数据计算宽高比
     (x, y, w, h) = cv2.boundingRect(c)
     ar = w / float(h)
-    print 'w' + str(w), 'h' + str(h)
+    # print 'w' + str(w), 'h' + str(h)
 
     # 为了辨别一个轮廓是一个方框，要求它的边界框不能太小，在这里边至少是40个像素，而且它的宽高比要近似于1
     # 为了去掉外面的那个方框,所以轮廓不能太长,小于300像素
     # 轮廓肯定会有4个点
-    if ar >= 0.9 and 37 < w < 300:
+    if ar >= 0.9 and 30 < w < 300:
         peri = cv2.arcLength(c, True)
         approx = cv2.approxPolyDP(c, 0.02 * peri, True)
         if len(approx) >= 4:
             questionCnts.append(c)
+            # colorpoint = 255
+            # color = ((q % 3 & 01) * colorpoint, ((q + 1) % 3 & 01) * colorpoint, ((q + 2) % 3 & 01) * colorpoint)
+            # cv2.drawContours(paper, [c], -1, color, 1)
 
-color = (0, 0, 255)
-cv2.drawContours(paper, questionCnts, -1, color, 3)
+# 以从顶部到底部的方法将我们的气泡轮廓进行排序，然后初始化正确答案数的变量。
+questionCnts = contours.sort_contours(questionCnts,
+                                      method="top-to-bottom")[0]
+
+for (q, i) in enumerate(questionCnts):
+    colorpoint = 255
+    color = ((q % 3 & 01) * colorpoint, ((q + 1) % 3 & 01) * colorpoint, ((q + 2) % 3 & 01) * colorpoint)
+    cv2.drawContours(paper, [questionCnts[q]], -1, color, 2)
+    # cv2.imshow("exam" + str(q), paper)
 
 # cv2.imshow("Original", image)
 # cv2.imshow("exam", thresh)
