@@ -1,0 +1,259 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta content="text/html:charset=UTF-8" http-equiv="Content-Type"> </meta>
+</head>
+
+<body>
+    <table border="1">
+        <tr>
+            <th> </th>
+            <th colspan="2"> 第一代 </th>
+            <th colspan="2"> 第二代 </th>
+            <th colspan="2"> 第三代 </th>
+            <th colspan="2"> 第四代 </th>
+            <th colspan="2"> 第五代 </th>
+        </tr>
+        <tr>
+            <td> 颜色 </td>
+            <td> 开始数目 </td>
+            <td> 幸存数目 </td>
+            <td> 开始数目 </td>
+            <td> 幸存数目 </td>
+            <td> 开始数目 </td>
+            <td> 幸存数目 </td>
+            <td> 开始数目 </td>
+            <td> 幸存数目 </td>
+            <td> 开始数目 </td>
+            <td> 幸存数目 </td>
+        </tr>
+        <tr>
+            <td bgcolor="#D2F35B"> 浅绿 </td>
+            <td id='type1_start1'> </td>
+            <td id='type1_live1'> </td>
+            <td id='type1_start2'> </td>
+            <td id='type1_live2'> </td>
+            <td id='type1_start3'> </td>
+            <td id='type1_live3'> </td>
+            <td id='type1_start4'> </td>
+            <td id='type1_live4'> </td>
+            <td id='type1_start5'> </td>
+            <td id='type1_live5'> </td>
+        </tr>
+        <tr>
+            <td bgcolor="#98D310"> 浅蓝 </td>
+            <td id='type2_start1'> </td>
+            <td id='type2_live1'> </td>
+            <td id='type2_start2'> </td>
+            <td id='type2_live2'> </td>
+            <td id='type2_start3'> </td>
+            <td id='type2_live3'> </td>
+            <td id='type2_start4'> </td>
+            <td id='type2_live4'> </td>
+            <td id='type2_start5'> </td>
+            <td id='type2_live5'> </td>
+        </tr>
+        <tr>
+            <td bgcolor="#65A710"> 深绿 </td>
+            <td id='type3_start1'> </td>
+            <td id='type3_live1'> </td>
+            <td id='type3_start2'> </td>
+            <td id='type3_live2'> </td>
+            <td id='type3_start3'> </td>
+            <td id='type3_live3'> </td>
+            <td id='type3_start4'> </td>
+            <td id='type3_live4'> </td>
+            <td id='type3_start5'> </td>
+            <td id='type3_live5'> </td>
+        </tr>
+        <tr>
+            <td bgcolor="#DEA04D"> 深蓝 </td>
+            <td id='type4_start1'> </td>
+            <td id='type4_live1'> </td>
+            <td id='type4_start2'> </td>
+            <td id='type4_live2'> </td>
+            <td id='type4_start3'> </td>
+            <td id='type4_live3'> </td>
+            <td id='type4_start4'> </td>
+            <td id='type4_live4'> </td>
+            <td id='type4_start5'> </td>
+            <td id='type4_live5'> </td>
+        </tr>
+    </table>
+    <canvas id="myCanvas"> your browser does not support the canvas tag </canvas>
+    <script type="text/javascript">
+    var canvas = document.getElementById('myCanvas');
+    initCanvas(canvas)
+    var frog_width = 80
+    var frog_height = 80
+    var firstCount = 20
+    var canvas_width = canvas.width
+    var canvas_height = canvas.height
+    var frog1_color = '#D2F35B'
+    var frog2_color = '#98D310'
+    var frog3_color = '#65A710'
+    var frog4_color = '#DEA04D'
+    var lakeBackground = '#DBF9D9'
+    var generation = 1
+    var generation_Max = 3
+    var frog1_count = firstCount
+    var frog2_count = firstCount
+    var frog3_count = firstCount
+    var frog4_count = firstCount
+    updateNum('start')
+    drawFrogs()
+    canvas.addEventListener("click", function(e) {
+        var hex = getPixelColor(e.layerX, e.layerY).hex.toString().toUpperCase()
+        switch(hex) {
+            case frog1_color:
+                frog1_count--
+                clickHandl()
+                break
+            case frog2_color:
+                frog2_count--
+                clickHandl()
+                break
+            case frog3_color:
+                frog3_count--
+                clickHandl()
+                break
+            case frog4_color:
+                frog4_count--
+                clickHandl()
+                break
+        }
+        console.log(frog1_count + ',' + frog2_count + ',' + frog3_count + ',' + frog4_count)
+    })
+
+    function clickHandl() {
+        if(generation <= generation_Max) {
+            if(frog1_count + frog2_count + frog3_count + frog4_count > firstCount) {
+                updateNum('live')
+                drawFrogs()
+            } else if(frog1_count + frog2_count + frog3_count + frog4_count == firstCount) {
+                updateNum('live')
+                frog1_count = frog1_count * 4
+                frog2_count = frog2_count * 4
+                frog3_count = frog3_count * 4
+                frog4_count = frog4_count * 4
+                generation++
+                updateNum('start')
+                drawFrogs()
+            }
+        }
+    }
+
+    function updateNum(updateType) {
+        if(generation <= generation_Max) {
+            document.getElementById('type1_' + updateType + generation).innerText = frog1_count
+            document.getElementById('type2_' + updateType + generation).innerText = frog2_count
+            document.getElementById('type3_' + updateType + generation).innerText = frog3_count
+            document.getElementById('type4_' + updateType + generation).innerText = frog4_count
+            console.log('updateNum')
+        }
+    }
+
+    function initCanvas(canvas) {
+        if(canvas.width < window.innerWidth) {
+            canvas.width = window.innerWidth-20;
+        }
+        if(canvas.height < window.innerHeight) {
+            canvas.height = window.innerHeight - 200;
+        }
+    }
+
+    function drawFrog(canvas, frogColor, frogCount) {
+        for(var i = 0; i < frogCount; i++) {
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = frogColor;
+            ctx.fillRect(Math.random() * (canvas_width - frog_width), Math.random() * (canvas_height - frog_height), frog_width, frog_height);
+        }
+    }
+
+    function drawTitle(canvas,titleTxt,x,yLine){
+    	var ctx = canvas.getContext("2d");
+    	var fontSize =20 
+    	   ctx.fillStyle = '#000';
+    	   var padding =yLine == 0?0: 12
+    var txt = titleTxt;
+    ctx.beginPath();
+
+    ctx.font =fontSize+ "px Microsoft YaHei";
+    ctx.fillText(txt, x, (fontSize+padding)*(yLine+1));
+    }
+
+    function drawCounts(canvas, typeNum, frogColor, frogCount) {
+        var ctx = canvas.getContext('2d');
+        var padding =1
+        ctx.fillStyle = frogColor;
+        ctx.fillRect(50, (typeNum + 0.1 * (typeNum+padding)) * frog_height, frog_width * frogCount, frog_height);
+    }
+
+    function drawFrogs() {
+        if(generation <= generation_Max) {
+            clearCanvas()
+            drawCanvansBackground(canvas)
+            drawFrog(canvas, frog1_color, frog1_count)
+            drawFrog(canvas, frog2_color, frog2_count)
+            drawFrog(canvas, frog3_color, frog3_count)
+            drawFrog(canvas, frog4_color, frog4_count)
+        } else {
+            clearCanvas()
+            drawTitle(canvas,'第五代幸存数目',0,0)
+                        drawCounts(canvas, 1, frog1_color, frog1_count)
+            drawCounts(canvas, 2, frog2_color, frog2_count)
+            drawCounts(canvas, 3, frog3_color, frog3_count)
+            drawCounts(canvas, 4, frog4_color, frog4_count)
+
+            drawTitle(canvas,'浅绿   '+frog1_count,0,1)
+            drawTitle(canvas,'浅蓝   '+frog2_count,0,2)
+            drawTitle(canvas,'深绿   '+frog3_count,0,3)
+            drawTitle(canvas,'深蓝   '+frog4_count,0,4)
+        }
+    }
+
+    function clearCanvas() {
+        var cxt = document.getElementById("myCanvas").getContext("2d");
+        cxt.clearRect(0, 0, canvas_width, canvas_height);
+    }
+
+    function drawCanvansBackground(canvas){
+    	   var ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = lakeBackground;
+        ctx.fillRect(0, 0,canvas_width , canvas_height);
+    }
+    
+
+    function getPixelColor(x, y) {
+        var imageData = canvas.getContext('2d').getImageData(x, y, 1, 1);
+        var pixel = imageData.data;
+        var r = pixel[0];
+        var g = pixel[1];
+        var b = pixel[2];
+        var a = pixel[3] / 255;
+        a = Math.round(a * 100) / 100;
+        var rHex = r.toString(16);
+        r < 16 && (rHex = "0" + rHex);
+        var gHex = g.toString(16);
+        g < 16 && (gHex = "0" + gHex);
+        var bHex = b.toString(16);
+        b < 16 && (bHex = "0" + bHex);
+        var rgbaColor = "rgba(" + r + "," + g + "," + b + "," + a + ")";
+        var rgbColor = "rgb(" + r + "," + g + "," + b + ")";
+        var hexColor = "#" + rHex + gHex + bHex;
+        return {
+            rgba: rgbaColor,
+            rgb: rgbColor,
+            hex: hexColor,
+            r: r,
+            g: g,
+            b: b,
+            a: a
+        };
+    }
+    </script>
+</body>
+
+</html>
